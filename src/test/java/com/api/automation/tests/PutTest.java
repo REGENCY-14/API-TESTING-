@@ -2,8 +2,6 @@ package com.api.automation.tests;
 
 import com.api.automation.base.BaseTest;
 import io.qameta.allure.Feature;
-import io.qameta.allure.Severity;
-import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.Story;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -28,7 +26,7 @@ public class PutTest extends BaseTest {
      */
     @Test
     @DisplayName("Should update post successfully")
-    @Severity(SeverityLevel.CRITICAL)
+
     public void testUpdatePost() {
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
@@ -56,7 +54,7 @@ public class PutTest extends BaseTest {
      */
     @Test
     @DisplayName("Should validate updated post with response extraction")
-    @Severity(SeverityLevel.HIGH)
+
     public void testUpdatePostWithResponseValidation() {
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
@@ -88,7 +86,7 @@ public class PutTest extends BaseTest {
      */
     @Test
     @DisplayName("Should update post with all validations and logging")
-    @Severity(SeverityLevel.HIGH)
+
     public void testUpdatePostWithDetailedValidation() {
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
@@ -121,7 +119,7 @@ public class PutTest extends BaseTest {
      */
     @Test
     @DisplayName("Should update post with JSON request body validation")
-    @Severity(SeverityLevel.MEDIUM)
+
     public void testUpdatePostWithJsonValidation() {
         String payload = "{\n" +
                 "  \"id\": 1,\n" +
@@ -150,7 +148,7 @@ public class PutTest extends BaseTest {
      */
     @Test
     @DisplayName("Should validate each updated field")
-    @Severity(SeverityLevel.HIGH)
+
     public void testUpdatePostFieldValidation() {
         String requestBody = "{\n" +
                 "  \"id\": 1,\n" +
