@@ -1,6 +1,10 @@
 package com.api.automation.tests;
 
 import com.api.automation.base.BaseTest;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +17,8 @@ import static org.hamcrest.Matchers.*;
  * Test class for POST API endpoints
  * Tests resource creation on JSONPlaceholder API
  */
+@Feature("API Testing")
+@Story("POST Endpoint Tests")
 @DisplayName("POST API Tests")
 public class PostTest extends BaseTest {
 
@@ -22,6 +28,7 @@ public class PostTest extends BaseTest {
      */
     @Test
     @DisplayName("Should create a new post successfully")
+    @Severity(SeverityLevel.CRITICAL)
     public void testCreatePost() {
         String requestBody = "{\n" +
                 "  \"title\": \"foo\",\n" +
@@ -48,6 +55,7 @@ public class PostTest extends BaseTest {
      */
     @Test
     @DisplayName("Should validate post creation with response extraction")
+    @Severity(SeverityLevel.HIGH)
     public void testCreatePostWithResponseValidation() {
         String requestBody = "{\n" +
                 "  \"title\": \"foo\",\n" +
@@ -78,6 +86,7 @@ public class PostTest extends BaseTest {
      */
     @Test
     @DisplayName("Should create post with all validations and logging")
+    @Severity(SeverityLevel.HIGH)
     public void testCreatePostWithDetailedValidation() {
         String requestBody = "{\n" +
                 "  \"title\": \"foo\",\n" +
@@ -108,6 +117,7 @@ public class PostTest extends BaseTest {
      */
     @Test
     @DisplayName("Should create post with JSON request body validation")
+    @Severity(SeverityLevel.MEDIUM)
     public void testCreatePostWithJsonValidation() {
         // Request payload
         String payload = "{\n" +

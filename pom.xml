@@ -43,6 +43,12 @@
       <version>${allure.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-rest-assured</artifactId>
+      <version>${allure.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -53,6 +59,7 @@
         <version>3.2.5</version>
         <configuration>
           <useModulePath>false</useModulePath>
+          <argLine>-Dallure.results.directory=target/allure-results</argLine>
         </configuration>
       </plugin>
       <plugin>

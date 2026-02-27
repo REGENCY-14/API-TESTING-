@@ -10,3 +10,4 @@
 - 2026-02-27: add PutTest for PUT API validation
 - 2026-02-27: add DeleteTest for DELETE API validation
 - 2026-02-27: add JSON schema validation to GET tests
+- 2026-02-27: configure Allure reporting and annotations
