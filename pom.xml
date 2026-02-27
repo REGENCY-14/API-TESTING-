@@ -12,8 +12,10 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.jupiter.version>5.10.2</junit.jupiter.version>
-    <restassured.version>5.4.0</restassured.version>
+    <junit.jupiter.version>5.11.2</junit.jupiter.version>
+    <restassured.version>5.5.0</restassured.version>
+    <allure.version>2.27.0</allure.version>
+    <allure.maven.version>2.12.0</allure.maven.version>
   </properties>
 
   <dependencies>
@@ -24,9 +26,21 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>json-schema-validator</artifactId>
+      <version>${restassured.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <version>${junit.jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-junit5</artifactId>
+      <version>${allure.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -40,6 +54,11 @@
         <configuration>
           <useModulePath>false</useModulePath>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-maven</artifactId>
+        <version>${allure.maven.version}</version>
       </plugin>
     </plugins>
   </build>
