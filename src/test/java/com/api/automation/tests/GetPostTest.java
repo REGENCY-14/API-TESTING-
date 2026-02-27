@@ -1,12 +1,14 @@
 package com.api.automation.tests;
 
 import com.api.automation.base.BaseTest;
+import com.api.automation.utils.SchemaUtil;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import static org.hamcrest.Matchers.*;
 
 /**
@@ -77,4 +79,39 @@ public class GetPostTest extends BaseTest {
                 .body("title", notNullValue(String.class))
                 .body("body", notNullValue(String.class));
     }
+
+    /**
+     * Test GET /posts/1 endpoint with JSON schema validation
+     * Validates response structure against post-schema.json
+     */
+    @Test
+    @DisplayName("Should validate post response against JSON schema")
+    public void testGetPostWithJsonSchemaValidation() {
+        given(requestSpec)
+                .when()
+                .get("/posts/1")
+                .then()
+                .statusCode(200)
+                .contentType(containsString("application/json"))
+                .body(matchesJsonSchema(SchemaUtil.getSchemaFile("post-schema.json")));
+    }
+
+    /**
+     * Test GET /posts/1 endpoint with schema validation and detailed logging
+     * Demonstrates complete validation including schema conformance
+     */
+    @Test
+    @DisplayName("Should validate post with schema and logging")
+    public void testGetPostWithSchemaAndLogging() {
+        given(requestSpec)
+                .when()
+                .get("/posts/1")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .contentType(containsString("application/json"))
+                .body(matchesJsonSchema(SchemaUtil.getSchemaFile("post-schema.json")))
+                .body("id", equalTo(1));
+    }
 }
+
