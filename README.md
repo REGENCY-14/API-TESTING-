@@ -8,3 +8,4 @@
 - 2026-02-27: add GetPostTest for GET API validation
 - 2026-02-27: add PostTest for POST API validation
 - 2026-02-27: add PutTest for PUT API validation
+- 2026-02-27: add DeleteTest for DELETE API validation
