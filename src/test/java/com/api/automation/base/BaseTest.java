@@ -122,10 +122,7 @@ public class BaseTest implements BeforeTestExecutionCallback, TestWatcher {
         String methodName = context.getRequiredTestMethod().getName();
 
         return switch (className) {
-            case "GetPostTest" -> "GET /posts/1";
-            case "PostTest" -> "POST /posts";
-            case "PutTest" -> "PUT /posts/1";
-            case "DeleteTest" -> methodName.equals("testDeleteMultiplePosts") ? "DELETE /posts/{id}" : "DELETE /posts/1";
+            case "PostsTest" -> resolvePostsOperation(methodName);
             case "CommentsTest" -> resolveCommentsOperation(methodName);
             case "AlbumsTest" -> resolveAlbumsOperation(methodName);
             case "PhotosTest" -> resolvePhotosOperation(methodName);
@@ -133,6 +130,18 @@ public class BaseTest implements BeforeTestExecutionCallback, TestWatcher {
             case "UsersTest" -> resolveUsersOperation(methodName);
             default -> "API TEST";
         };
+    }
+
+    private String resolvePostsOperation(String methodName) {
+        if (methodName.contains("Create")) return "POST /posts";
+        if (methodName.contains("Update")) return "PUT /posts/1";
+        if (methodName.contains("Patch")) return "PATCH /posts/1";
+        if (methodName.contains("DeleteMultiplePosts")) return "DELETE /posts/{id}";
+        if (methodName.contains("Delete")) return "DELETE /posts/1";
+        if (methodName.contains("ByUserId")) return "GET /posts?userId=1";
+        if (methodName.contains("Comments")) return "GET /posts/1/comments";
+        if (methodName.contains("All")) return "GET /posts";
+        return "GET /posts/1";
     }
 
     private String resolveCommentsOperation(String methodName) {
