@@ -6,6 +6,7 @@ import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import utils.Endpoints;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -19,6 +20,12 @@ import static org.hamcrest.Matchers.*;
 @DisplayName("DELETE API Tests")
 public class DeleteTest extends BaseTest {
 
+    private static final String POST_BY_ID_1 = Endpoints.POSTS + "/1";
+
+    private static String postById(int postId) {
+        return Endpoints.POSTS + "/" + postId;
+    }
+
     /**
      * Test DELETE /posts/1 endpoint
      * Validates status code is 200 or 204 indicating successful deletion
@@ -29,7 +36,7 @@ public class DeleteTest extends BaseTest {
     public void testDeletePost() {
         given(requestSpec)
                 .when()
-                .delete("/posts/1")
+            .delete(POST_BY_ID_1)
                 .then()
                 .statusCode(anyOf(equalTo(200), equalTo(204)));
     }
@@ -44,7 +51,7 @@ public class DeleteTest extends BaseTest {
     public void testDeletePostWithResponseValidation() {
         Response response = given(requestSpec)
                 .when()
-                .delete("/posts/1")
+            .delete(POST_BY_ID_1)
                 .then()
                 .extract()
                 .response();
@@ -65,7 +72,7 @@ public class DeleteTest extends BaseTest {
     public void testDeletePostWithDetailedValidation() {
         given(requestSpec)
                 .when()
-                .delete("/posts/1")
+            .delete(POST_BY_ID_1)
                 .then()
                 .log().all()  // Log complete response
                 .statusCode(anyOf(equalTo(200), equalTo(204)));
@@ -81,7 +88,7 @@ public class DeleteTest extends BaseTest {
     public void testDeletePostWithAssertThat() {
         given(requestSpec)
                 .when()
-                .delete("/posts/1")
+            .delete(POST_BY_ID_1)
                 .then()
                 .assertThat()
                 .statusCode(anyOf(equalTo(200), equalTo(204)));
@@ -97,7 +104,7 @@ public class DeleteTest extends BaseTest {
     public void testDeletePostSuccessStatus() {
         Response response = given(requestSpec)
                 .when()
-                .delete("/posts/1")
+            .delete(POST_BY_ID_1)
                 .then()
                 .extract()
                 .response();
@@ -126,7 +133,7 @@ public class DeleteTest extends BaseTest {
         for (int postId : postIds) {
             Response response = given(requestSpec)
                     .when()
-                    .delete("/posts/" + postId)
+                    .delete(postById(postId))
                     .then()
                     .extract()
                     .response();

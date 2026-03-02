@@ -7,6 +7,7 @@ import io.qameta.allure.Story;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import utils.Endpoints;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
@@ -21,6 +22,8 @@ import static org.hamcrest.Matchers.*;
 @DisplayName("GET API Tests")
 public class GetPostTest extends BaseTest {
 
+    private static final String POST_BY_ID_1 = Endpoints.POSTS + "/1";
+
     /**
      * Test GET /posts/1 endpoint
      * Validates status code, content type, and response body structure
@@ -31,7 +34,7 @@ public class GetPostTest extends BaseTest {
     public void testGetPost() {
         given(requestSpec)
                 .when()
-                .get("/posts/1")
+            .get(POST_BY_ID_1)
                 .then()
                 .statusCode(200)
                 .contentType("application/json; charset=utf-8")
@@ -51,7 +54,7 @@ public class GetPostTest extends BaseTest {
     public void testGetPostWithResponseValidation() {
         Response response = given(requestSpec)
                 .when()
-                .get("/posts/1")
+            .get(POST_BY_ID_1)
                 .then()
                 .statusCode(200)
                 .contentType(containsString("application/json"))
@@ -75,7 +78,7 @@ public class GetPostTest extends BaseTest {
     public void testGetPostWithDetailedValidation() {
         given(requestSpec)
                 .when()
-                .get("/posts/1")
+            .get(POST_BY_ID_1)
                 .then()
                 .log().all()  // Log all response details
                 .statusCode(200)
@@ -96,7 +99,7 @@ public class GetPostTest extends BaseTest {
     public void testGetPostWithJsonSchemaValidation() {
         given(requestSpec)
                 .when()
-                .get("/posts/1")
+            .get(POST_BY_ID_1)
                 .then()
                 .statusCode(200)
                 .contentType(containsString("application/json"))
@@ -113,7 +116,7 @@ public class GetPostTest extends BaseTest {
     public void testGetPostWithSchemaAndLogging() {
         given(requestSpec)
                 .when()
-                .get("/posts/1")
+            .get(POST_BY_ID_1)
                 .then()
                 .log().all()
                 .statusCode(200)

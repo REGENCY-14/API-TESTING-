@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import utils.Endpoints;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -20,6 +21,15 @@ import static org.hamcrest.Matchers.*;
 @DisplayName("POST API Tests")
 public class PostTest extends BaseTest {
 
+    private static final String TITLE_FOO = "foo";
+    private static final String BODY_BAR = "bar";
+    private static final int USER_ID_1 = 1;
+    private static final String CREATE_POST_PAYLOAD = "{\n" +
+        "  \"title\": \"" + TITLE_FOO + "\",\n" +
+        "  \"body\": \"" + BODY_BAR + "\",\n" +
+        "  \"userId\": " + USER_ID_1 + "\n" +
+        "}";
+
     /**
      * Test POST /posts endpoint
      * Validates status code is 201 and response contains expected fields
@@ -28,23 +38,17 @@ public class PostTest extends BaseTest {
     @DisplayName("Should create a new post successfully")
 
     public void testCreatePost() {
-        String requestBody = "{\n" +
-                "  \"title\": \"foo\",\n" +
-                "  \"body\": \"bar\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         given(requestSpec)
-                .body(requestBody)
+                .body(CREATE_POST_PAYLOAD)
                 .when()
-                .post("/posts")
+                .post(Endpoints.POSTS)
                 .then()
                 .statusCode(201)
                 .contentType(containsString("application/json"))
                 .body("id", notNullValue())
-                .body("title", equalTo("foo"))
-                .body("body", equalTo("bar"))
-                .body("userId", equalTo(1));
+                .body("title", equalTo(TITLE_FOO))
+                .body("body", equalTo(BODY_BAR))
+                .body("userId", equalTo(USER_ID_1));
     }
 
     /**
@@ -55,16 +59,10 @@ public class PostTest extends BaseTest {
     @DisplayName("Should validate post creation with response extraction")
 
     public void testCreatePostWithResponseValidation() {
-        String requestBody = "{\n" +
-                "  \"title\": \"foo\",\n" +
-                "  \"body\": \"bar\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         Response response = given(requestSpec)
-                .body(requestBody)
+                .body(CREATE_POST_PAYLOAD)
                 .when()
-                .post("/posts")
+                .post(Endpoints.POSTS)
                 .then()
                 .statusCode(201)
                 .contentType(hasToString(containsString("application/json")))
@@ -72,9 +70,9 @@ public class PostTest extends BaseTest {
                 .response();
 
         // Validate response body matches request
-        assert response.jsonPath().getInt("userId") == 1 : "userId should be 1";
-        assert response.jsonPath().getString("title").equals("foo") : "title should match request";
-        assert response.jsonPath().getString("body").equals("bar") : "body should match request";
+        assert response.jsonPath().getInt("userId") == USER_ID_1 : "userId should be 1";
+        assert response.jsonPath().getString("title").equals(TITLE_FOO) : "title should match request";
+        assert response.jsonPath().getString("body").equals(BODY_BAR) : "body should match request";
         assert response.jsonPath().getInt("id") > 0 : "id should be a positive integer";
     }
 
@@ -86,27 +84,21 @@ public class PostTest extends BaseTest {
     @DisplayName("Should create post with all validations and logging")
 
     public void testCreatePostWithDetailedValidation() {
-        String requestBody = "{\n" +
-                "  \"title\": \"foo\",\n" +
-                "  \"body\": \"bar\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         given(requestSpec)
-                .body(requestBody)
+                .body(CREATE_POST_PAYLOAD)
                 .when()
-                .post("/posts")
+                .post(Endpoints.POSTS)
                 .then()
                 .log().all()  // Log complete response
                 .statusCode(201)
                 .contentType(containsString("application/json"))
                 .body("id", notNullValue(Integer.class))
                 .body("title", notNullValue(String.class))
-                .body("title", equalTo("foo"))
+                .body("title", equalTo(TITLE_FOO))
                 .body("body", notNullValue(String.class))
-                .body("body", equalTo("bar"))
+                .body("body", equalTo(BODY_BAR))
                 .body("userId", notNullValue(Integer.class))
-                .body("userId", equalTo(1));
+                .body("userId", equalTo(USER_ID_1));
     }
 
     /**
@@ -117,24 +109,17 @@ public class PostTest extends BaseTest {
     @DisplayName("Should create post with JSON request body validation")
 
     public void testCreatePostWithJsonValidation() {
-        // Request payload
-        String payload = "{\n" +
-                "  \"title\": \"foo\",\n" +
-                "  \"body\": \"bar\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         given(requestSpec)
                 .contentType(ContentType.JSON)
-                .body(payload)
+                .body(CREATE_POST_PAYLOAD)
                 .when()
-                .post("/posts")
+                .post(Endpoints.POSTS)
                 .then()
                 .assertThat()
                 .statusCode(201)
-                .body("userId", equalTo(1))
-                .body("title", equalTo("foo"))
-                .body("body", equalTo("bar"))
+                .body("userId", equalTo(USER_ID_1))
+                .body("title", equalTo(TITLE_FOO))
+                .body("body", equalTo(BODY_BAR))
                 .body("id", notNullValue());
     }
 }

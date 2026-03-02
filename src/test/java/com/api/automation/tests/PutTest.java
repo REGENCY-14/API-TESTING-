@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import utils.Endpoints;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -20,6 +21,18 @@ import static org.hamcrest.Matchers.*;
 @DisplayName("PUT API Tests")
 public class PutTest extends BaseTest {
 
+    private static final int POST_ID_1 = 1;
+    private static final int USER_ID_1 = 1;
+    private static final String UPDATED_TITLE = "updated title";
+    private static final String UPDATED_BODY = "updated body";
+    private static final String POST_BY_ID_1 = Endpoints.POSTS + "/1";
+    private static final String UPDATE_POST_PAYLOAD = "{\n" +
+            "  \"id\": " + POST_ID_1 + ",\n" +
+            "  \"title\": \"" + UPDATED_TITLE + "\",\n" +
+            "  \"body\": \"" + UPDATED_BODY + "\",\n" +
+            "  \"userId\": " + USER_ID_1 + "\n" +
+            "}";
+
     /**
      * Test PUT /posts/1 endpoint
      * Validates status code is 200 and response contains updated data
@@ -28,24 +41,17 @@ public class PutTest extends BaseTest {
     @DisplayName("Should update post successfully")
 
     public void testUpdatePost() {
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"title\": \"updated title\",\n" +
-                "  \"body\": \"updated body\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         given(requestSpec)
-                .body(requestBody)
+                .body(UPDATE_POST_PAYLOAD)
                 .when()
-                .put("/posts/1")
+                .put(POST_BY_ID_1)
                 .then()
                 .statusCode(200)
                 .contentType(containsString("application/json"))
-                .body("id", equalTo(1))
-                .body("title", equalTo("updated title"))
-                .body("body", equalTo("updated body"))
-                .body("userId", equalTo(1));
+                .body("id", equalTo(POST_ID_1))
+                .body("title", equalTo(UPDATED_TITLE))
+                .body("body", equalTo(UPDATED_BODY))
+                .body("userId", equalTo(USER_ID_1));
     }
 
     /**
@@ -56,17 +62,10 @@ public class PutTest extends BaseTest {
     @DisplayName("Should validate updated post with response extraction")
 
     public void testUpdatePostWithResponseValidation() {
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"title\": \"updated title\",\n" +
-                "  \"body\": \"updated body\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         Response response = given(requestSpec)
-                .body(requestBody)
+                .body(UPDATE_POST_PAYLOAD)
                 .when()
-                .put("/posts/1")
+                .put(POST_BY_ID_1)
                 .then()
                 .statusCode(200)
                 .contentType(hasToString(containsString("application/json")))
@@ -74,10 +73,10 @@ public class PutTest extends BaseTest {
                 .response();
 
         // Validate response contains updated data
-        assert response.jsonPath().getInt("id") == 1 : "id should be 1";
-        assert response.jsonPath().getString("title").equals("updated title") : "title should be updated";
-        assert response.jsonPath().getString("body").equals("updated body") : "body should be updated";
-        assert response.jsonPath().getInt("userId") == 1 : "userId should remain 1";
+        assert response.jsonPath().getInt("id") == POST_ID_1 : "id should be 1";
+        assert response.jsonPath().getString("title").equals(UPDATED_TITLE) : "title should be updated";
+        assert response.jsonPath().getString("body").equals(UPDATED_BODY) : "body should be updated";
+        assert response.jsonPath().getInt("userId") == USER_ID_1 : "userId should remain 1";
     }
 
     /**
@@ -88,29 +87,22 @@ public class PutTest extends BaseTest {
     @DisplayName("Should update post with all validations and logging")
 
     public void testUpdatePostWithDetailedValidation() {
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"title\": \"updated title\",\n" +
-                "  \"body\": \"updated body\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         given(requestSpec)
-                .body(requestBody)
+                .body(UPDATE_POST_PAYLOAD)
                 .when()
-                .put("/posts/1")
+                .put(POST_BY_ID_1)
                 .then()
                 .log().all()  // Log complete response
                 .statusCode(200)
                 .contentType(containsString("application/json"))
                 .body("id", notNullValue(Integer.class))
-                .body("id", equalTo(1))
+                .body("id", equalTo(POST_ID_1))
                 .body("title", notNullValue(String.class))
-                .body("title", equalTo("updated title"))
+                .body("title", equalTo(UPDATED_TITLE))
                 .body("body", notNullValue(String.class))
-                .body("body", equalTo("updated body"))
+                .body("body", equalTo(UPDATED_BODY))
                 .body("userId", notNullValue(Integer.class))
-                .body("userId", equalTo(1));
+                .body("userId", equalTo(USER_ID_1));
     }
 
     /**
@@ -121,25 +113,18 @@ public class PutTest extends BaseTest {
     @DisplayName("Should update post with JSON request body validation")
 
     public void testUpdatePostWithJsonValidation() {
-        String payload = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"title\": \"updated title\",\n" +
-                "  \"body\": \"updated body\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         given(requestSpec)
                 .contentType(ContentType.JSON)
-                .body(payload)
+                .body(UPDATE_POST_PAYLOAD)
                 .when()
-                .put("/posts/1")
+                .put(POST_BY_ID_1)
                 .then()
                 .assertThat()
                 .statusCode(200)
-                .body("id", equalTo(1))
-                .body("title", equalTo("updated title"))
-                .body("body", equalTo("updated body"))
-                .body("userId", equalTo(1));
+                .body("id", equalTo(POST_ID_1))
+                .body("title", equalTo(UPDATED_TITLE))
+                .body("body", equalTo(UPDATED_BODY))
+                .body("userId", equalTo(USER_ID_1));
     }
 
     /**
@@ -150,17 +135,10 @@ public class PutTest extends BaseTest {
     @DisplayName("Should validate each updated field")
 
     public void testUpdatePostFieldValidation() {
-        String requestBody = "{\n" +
-                "  \"id\": 1,\n" +
-                "  \"title\": \"updated title\",\n" +
-                "  \"body\": \"updated body\",\n" +
-                "  \"userId\": 1\n" +
-                "}";
-
         Response response = given(requestSpec)
-                .body(requestBody)
+                .body(UPDATE_POST_PAYLOAD)
                 .when()
-                .put("/posts/1")
+                .put(POST_BY_ID_1)
                 .then()
                 .statusCode(200)
                 .extract()
@@ -173,9 +151,9 @@ public class PutTest extends BaseTest {
         int userId = response.jsonPath().getInt("userId");
 
         // Assert each field
-        assert id == 1 : "Post id should be 1";
-        assert title.equals("updated title") : "Title should be 'updated title', but got: " + title;
-        assert body.equals("updated body") : "Body should be 'updated body', but got: " + body;
-        assert userId == 1 : "UserId should be 1";
+        assert id == POST_ID_1 : "Post id should be 1";
+        assert title.equals(UPDATED_TITLE) : "Title should be 'updated title', but got: " + title;
+        assert body.equals(UPDATED_BODY) : "Body should be 'updated body', but got: " + body;
+        assert userId == USER_ID_1 : "UserId should be 1";
     }
 }
