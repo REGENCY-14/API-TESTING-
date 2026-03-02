@@ -5,8 +5,11 @@
 ![REST Assured](https://img.shields.io/badge/REST%20Assured-5.5.0-green.svg)
 ![JUnit](https://img.shields.io/badge/JUnit-5.11.2-red.svg)
 ![Allure](https://img.shields.io/badge/Allure-2.27.0-yellow.svg)
+![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED.svg)
+![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF.svg)
+![Tests](https://img.shields.io/badge/Tests-20%20Passing-success.svg)
 
-A professional REST API automation testing framework built with REST Assured, JUnit 5, and Allure reporting. This framework provides comprehensive test coverage for RESTful APIs with built-in logging, JSON schema validation, and detailed reporting capabilities.
+A professional, production-ready REST API automation testing framework built with REST Assured, JUnit 5, and Allure reporting. This framework provides comprehensive test coverage for RESTful APIs with built-in logging, JSON schema validation, detailed reporting, Docker containerization, and CI/CD integration.
 
 ## 📋 Project Overview
 
@@ -39,6 +42,8 @@ This framework demonstrates industry best practices for API testing automation, 
 | **JSON Schema Validator** | 5.5.0 | API response schema validation |
 | **Maven Surefire** | 3.2.5 | Test execution plugin |
 | **Allure Maven** | 2.12.0 | Allure report generation plugin |
+| **Docker** | Latest | Containerization platform |
+| **GitHub Actions** | Latest | CI/CD automation |
 
 ## 📁 Project Structure
 
@@ -197,12 +202,26 @@ After running tests, you can find:
 - Feature and Story categorization
 - Execution timeline visualization
 - Test case descriptions and steps
+- Automated deployment to GitHub Pages
 
 ### Logging Capabilities
 - Complete request details (headers, body, method, URI)
 - Full response details (status, headers, body, time)
 - Console output for debugging
 - Allure report attachments
+
+### Docker Support
+- Containerized test execution
+- Isolated test environment
+- Easy deployment and portability
+- Volume mounting for report access
+
+### CI/CD Integration
+- Automated testing on push/PR
+- GitHub Actions workflow
+- Automatic report generation
+- Test history tracking
+- Artifact archival (30 days retention)
 
 ## 🔧 Configuration
 
@@ -219,6 +238,58 @@ allure.report.title=API Testing Framework - REST Assured
 allure.history.trend.enable=true
 allure.execution.enabled=true
 ```
+
+## 🐳 Running Tests with Docker
+
+This framework includes Docker support for containerized test execution.
+
+### Build Docker Image
+```bash
+docker build -t api-automation .
+```
+
+### Run Tests in Docker Container
+```bash
+docker run --rm api-automation
+```
+
+### Run with Volume Mount (for reports)
+```bash
+docker run --rm -v "%cd%/target:/app/target" api-automation
+```
+
+On Linux/Mac:
+```bash
+docker run --rm -v "$(pwd)/target:/app/target" api-automation
+```
+
+## 🚀 CI/CD with GitHub Actions
+
+This project includes a comprehensive GitHub Actions workflow (`api-tests.yml`) that automatically:
+
+### Automated Testing
+- ✅ Runs on every push to `main`, `dev`, and `feature/**` branches
+- ✅ Executes on pull requests targeting `main` or `dev`
+- ✅ Uses JDK 17 with Maven caching for faster builds
+- ✅ Generates detailed test execution reports
+
+### Allure Report Generation
+- 📊 Automatically generates Allure reports after each test run
+- 🌐 Deploys reports to GitHub Pages (accessible at: `https://<username>.github.io/<repo-name>`)
+- 📁 Maintains history of last 20 test runs
+- 💾 Archives test artifacts for 30 days
+
+### Artifacts
+The workflow uploads the following artifacts:
+- `allure-results` - Raw test results in Allure format
+- `allure-report` - Generated HTML report
+- `surefire-reports` - Maven Surefire test reports
+
+### Viewing CI Results
+Navigate to the **Actions** tab in your GitHub repository to view:
+- Test execution status
+- Downloadable artifacts
+- Test summary in workflow runs
 
 ## 🌿 Git Workflow
 
@@ -329,6 +400,9 @@ No known issues at this time. All 20 tests passing successfully.
 
 ---
 
-**Last Updated**: February 27, 2026  
+**Last Updated**: March 2, 2026  
 **Framework Version**: 1.0.0  
-**Build Status**: ✅ Passing
+**Build Status**: ✅ Passing  
+**CI/CD**: ✅ GitHub Actions Enabled  
+**Docker**: ✅ Containerized  
+**Documentation**: ✅ Complete
