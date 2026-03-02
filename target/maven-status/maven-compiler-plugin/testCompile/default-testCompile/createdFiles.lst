@@ -3,6 +3,5 @@ com\api\automation\tests\PutTest.class
 com\api\automation\utils\SchemaUtil.class
 com\api\automation\tests\DeleteTest.class
 com\api\automation\base\BaseTest.class
-com\api\automation\tests\SampleTest.class
 utils\Endpoints.class
 com\api\automation\tests\PostTest.class

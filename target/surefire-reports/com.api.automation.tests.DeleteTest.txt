@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.api.automation.tests.DeleteTest
 -------------------------------------------------------------------------------
-Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.445 s -- in com.api.automation.tests.DeleteTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.993 s -- in com.api.automation.tests.DeleteTest

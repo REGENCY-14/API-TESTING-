@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.api.automation.tests.GetPostTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.357 s -- in com.api.automation.tests.GetPostTest
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.329 s -- in com.api.automation.tests.GetPostTest

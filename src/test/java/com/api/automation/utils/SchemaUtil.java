@@ -56,4 +56,14 @@ public class SchemaUtil {
             throw new RuntimeException("Error loading schema file: " + schemaFileName, e);
         }
     }
+
+    /**
+     * Loads a JSON schema file from the resources directory.
+     * @param schemaFileName The name of the schema file (e.g., "post-schema.json").
+     * @return The content of the schema file as a String.
+     * @throws Exception If the file cannot be found or read.
+     */
+    public static String loadSchema(String schemaFileName) throws Exception {
+        return getSchemaAsString(schemaFileName);
+    }
 }

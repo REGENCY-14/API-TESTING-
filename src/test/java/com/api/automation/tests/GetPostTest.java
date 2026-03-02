@@ -80,7 +80,6 @@ public class GetPostTest extends BaseTest {
                 .when()
             .get(POST_BY_ID_1)
                 .then()
-                .log().all()  // Log all response details
                 .statusCode(200)
                 .contentType(hasToString(containsString("application/json")))
                 .body("userId", notNullValue(Integer.class))
@@ -118,7 +117,6 @@ public class GetPostTest extends BaseTest {
                 .when()
             .get(POST_BY_ID_1)
                 .then()
-                .log().all()
                 .statusCode(200)
                 .contentType(containsString("application/json"))
                 .body(matchesJsonSchema(SchemaUtil.getSchemaFile("post-schema.json")))

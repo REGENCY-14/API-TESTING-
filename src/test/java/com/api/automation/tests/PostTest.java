@@ -31,8 +31,8 @@ public class PostTest extends BaseTest {
         "}";
 
     /**
-     * Test POST /posts endpoint
-     * Validates status code is 201 and response contains expected fields
+     * Tests creating a new post.
+     * Validates that the response contains the created post data and has a 201 status code.
      */
     @Test
     @DisplayName("Should create a new post successfully")
@@ -52,8 +52,8 @@ public class PostTest extends BaseTest {
     }
 
     /**
-     * Test POST /posts endpoint with request body validation
-     * Uses Map-based request body and validates response fields
+     * Tests creating a new post with response extraction.
+     * Extracts the response and validates that the created data matches the request.
      */
     @Test
     @DisplayName("Should validate post creation with response extraction")
@@ -77,8 +77,8 @@ public class PostTest extends BaseTest {
     }
 
     /**
-     * Test POST /posts endpoint with detailed logging
-     * Demonstrates full request/response logging and comprehensive assertions
+     * Tests creating a new post with detailed validation.
+     * Validates the response status code, content type, and created fields.
      */
     @Test
     @DisplayName("Should create post with all validations and logging")
@@ -89,7 +89,6 @@ public class PostTest extends BaseTest {
                 .when()
                 .post(Endpoints.POSTS)
                 .then()
-                .log().all()  // Log complete response
                 .statusCode(201)
                 .contentType(containsString("application/json"))
                 .body("id", notNullValue(Integer.class))
@@ -102,8 +101,8 @@ public class PostTest extends BaseTest {
     }
 
     /**
-     * Test POST /posts endpoint with JSON request compilation
-     * Demonstrates building JSON payload programmatically
+     * Tests creating a new post with JSON request compilation.
+     * Demonstrates building JSON payload programmatically.
      */
     @Test
     @DisplayName("Should create post with JSON request body validation")

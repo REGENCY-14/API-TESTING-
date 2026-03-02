@@ -27,8 +27,8 @@ public class DeleteTest extends BaseTest {
     }
 
     /**
-     * Test DELETE /posts/1 endpoint
-     * Validates status code is 200 or 204 indicating successful deletion
+     * Tests the deletion of a post by ID.
+     * Validates that the response status code is either 200 (OK) or 204 (No Content).
      */
     @Test
     @DisplayName("Should delete post successfully")
@@ -42,8 +42,8 @@ public class DeleteTest extends BaseTest {
     }
 
     /**
-     * Test DELETE /posts/1 endpoint with response extraction
-     * Validates response status and captures response details
+     * Tests the deletion of a post by ID with response extraction.
+     * Extracts the response and validates the status code.
      */
     @Test
     @DisplayName("Should validate deletion with response extraction")
@@ -63,8 +63,8 @@ public class DeleteTest extends BaseTest {
     }
 
     /**
-     * Test DELETE /posts/1 endpoint with detailed logging
-     * Demonstrates full request/response logging and comprehensive validation
+     * Tests the deletion of a post by ID with detailed validation.
+     * Validates the response status code using assertion chaining.
      */
     @Test
     @DisplayName("Should delete post with logging and validation")
@@ -74,13 +74,12 @@ public class DeleteTest extends BaseTest {
                 .when()
             .delete(POST_BY_ID_1)
                 .then()
-                .log().all()  // Log complete response
                 .statusCode(anyOf(equalTo(200), equalTo(204)));
     }
 
     /**
-     * Test DELETE /posts/1 endpoint with assertion chaining
-     * Uses assertThat() for chainable assertions
+     * Tests the deletion of a post by ID using assertThat for validation.
+     * Ensures the response status code is either 200 (OK) or 204 (No Content).
      */
     @Test
     @DisplayName("Should delete post with assertion chaining")
@@ -95,8 +94,8 @@ public class DeleteTest extends BaseTest {
     }
 
     /**
-     * Test DELETE /posts/1 endpoint with response status code check
-     * Validates response is successful but does not exceed 299 (2xx range)
+     * Tests the deletion of a post by ID and validates the success status.
+     * Ensures the status code is in the 2xx range and specifically 200 or 204.
      */
     @Test
     @DisplayName("Should verify deletion returns success status")
@@ -121,8 +120,8 @@ public class DeleteTest extends BaseTest {
     }
 
     /**
-     * Test DELETE /posts/1 endpoint with multiple resource deletion
-     * Demonstrates deleting different post IDs using parametrized approach
+     * Tests the deletion of multiple posts by their IDs.
+     * Iterates through an array of post IDs, deleting each and validating the response.
      */
     @Test
     @DisplayName("Should delete different post resources")

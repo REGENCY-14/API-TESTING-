@@ -34,8 +34,8 @@ public class PutTest extends BaseTest {
             "}";
 
     /**
-     * Test PUT /posts/1 endpoint
-     * Validates status code is 200 and response contains updated data
+     * Tests updating a post by ID.
+     * Validates that the response contains the updated data and has a 200 status code.
      */
     @Test
     @DisplayName("Should update post successfully")
@@ -55,8 +55,8 @@ public class PutTest extends BaseTest {
     }
 
     /**
-     * Test PUT /posts/1 endpoint with response extraction and validation
-     * Validates updated data matches request
+     * Tests updating a post by ID with response extraction.
+     * Extracts the response and validates that the updated data matches the request.
      */
     @Test
     @DisplayName("Should validate updated post with response extraction")
@@ -80,8 +80,8 @@ public class PutTest extends BaseTest {
     }
 
     /**
-     * Test PUT /posts/1 endpoint with detailed logging and comprehensive assertions
-     * Demonstrates full request/response logging and field validation
+     * Tests updating a post by ID with detailed validation.
+     * Validates the response status code, content type, and updated fields.
      */
     @Test
     @DisplayName("Should update post with all validations and logging")
@@ -92,7 +92,6 @@ public class PutTest extends BaseTest {
                 .when()
                 .put(POST_BY_ID_1)
                 .then()
-                .log().all()  // Log complete response
                 .statusCode(200)
                 .contentType(containsString("application/json"))
                 .body("id", notNullValue(Integer.class))
@@ -106,8 +105,8 @@ public class PutTest extends BaseTest {
     }
 
     /**
-     * Test PUT /posts/1 endpoint with JSON content type validation
-     * Demonstrates explicit Content-Type handling and assertion chaining
+     * Tests updating a post by ID with JSON content type validation.
+     * Demonstrates explicit Content-Type handling and assertion chaining.
      */
     @Test
     @DisplayName("Should update post with JSON request body validation")
@@ -128,8 +127,8 @@ public class PutTest extends BaseTest {
     }
 
     /**
-     * Test PUT /posts/1 endpoint with field-by-field validation
-     * Validates each updated field individually to ensure data integrity
+     * Tests updating a post by ID with field-by-field validation.
+     * Validates each updated field individually to ensure data integrity.
      */
     @Test
     @DisplayName("Should validate each updated field")
