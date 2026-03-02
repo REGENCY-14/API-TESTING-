@@ -126,8 +126,70 @@ public class BaseTest implements BeforeTestExecutionCallback, TestWatcher {
             case "PostTest" -> "POST /posts";
             case "PutTest" -> "PUT /posts/1";
             case "DeleteTest" -> methodName.equals("testDeleteMultiplePosts") ? "DELETE /posts/{id}" : "DELETE /posts/1";
+            case "CommentsTest" -> resolveCommentsOperation(methodName);
+            case "AlbumsTest" -> resolveAlbumsOperation(methodName);
+            case "PhotosTest" -> resolvePhotosOperation(methodName);
+            case "TodosTest" -> resolveTodosOperation(methodName);
+            case "UsersTest" -> resolveUsersOperation(methodName);
             default -> "API TEST";
         };
+    }
+
+    private String resolveCommentsOperation(String methodName) {
+        if (methodName.contains("Create")) return "POST /comments";
+        if (methodName.contains("Update")) return "PUT /comments/1";
+        if (methodName.contains("Patch")) return "PATCH /comments/1";
+        if (methodName.contains("Delete")) return "DELETE /comments/1";
+        if (methodName.contains("ByPostId")) return "GET /comments?postId=1";
+        if (methodName.contains("All")) return "GET /comments";
+        return "GET /comments/1";
+    }
+
+    private String resolveAlbumsOperation(String methodName) {
+        if (methodName.contains("Create")) return "POST /albums";
+        if (methodName.contains("Update")) return "PUT /albums/1";
+        if (methodName.contains("Patch")) return "PATCH /albums/1";
+        if (methodName.contains("Delete")) return "DELETE /albums/1";
+        if (methodName.contains("ByUserId")) return "GET /albums?userId=1";
+        if (methodName.contains("Photos")) return "GET /albums/1/photos";
+        if (methodName.contains("All")) return "GET /albums";
+        return "GET /albums/1";
+    }
+
+    private String resolvePhotosOperation(String methodName) {
+        if (methodName.contains("Create")) return "POST /photos";
+        if (methodName.contains("Update")) return "PUT /photos/1";
+        if (methodName.contains("Patch")) return "PATCH /photos/1";
+        if (methodName.contains("Delete")) return "DELETE /photos/1";
+        if (methodName.contains("ByAlbumId") || methodName.contains("MultipleFilters")) return "GET /photos?albumId=1";
+        if (methodName.contains("All")) return "GET /photos";
+        return "GET /photos/1";
+    }
+
+    private String resolveTodosOperation(String methodName) {
+        if (methodName.contains("Create")) return "POST /todos";
+        if (methodName.contains("Update")) return "PUT /todos/1";
+        if (methodName.contains("Patch")) return "PATCH /todos/1";
+        if (methodName.contains("Delete")) return "DELETE /todos/1";
+        if (methodName.contains("ByUserId") || methodName.contains("MultipleFilters")) return "GET /todos?userId=1";
+        if (methodName.contains("Completed")) return "GET /todos?completed=true/false";
+        if (methodName.contains("Incomplete")) return "GET /todos?completed=false";
+        if (methodName.contains("All")) return "GET /todos";
+        return "GET /todos/1";
+    }
+
+    private String resolveUsersOperation(String methodName) {
+        if (methodName.contains("Create")) return "POST /users";
+        if (methodName.contains("Update")) return "PUT /users/1";
+        if (methodName.contains("Patch")) return "PATCH /users/1";
+        if (methodName.contains("Delete")) return "DELETE /users/1";
+        if (methodName.contains("ByUsername")) return "GET /users?username=Bret";
+        if (methodName.contains("ByEmail")) return "GET /users?email=...";
+        if (methodName.contains("Posts")) return "GET /users/1/posts";
+        if (methodName.contains("Albums")) return "GET /users/1/albums";
+        if (methodName.contains("Todos")) return "GET /users/1/todos";
+        if (methodName.contains("All")) return "GET /users";
+        return "GET /users/1";
     }
 
     /**
