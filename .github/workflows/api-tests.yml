@@ -51,7 +51,7 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
-        publish_dir: allure-history
+        publish_dir: ./allure-report
         
     - name: Upload Allure results as artifact
       if: always()
@@ -85,15 +85,25 @@ jobs:
         if [ -d "target/surefire-reports" ]; then
           echo "### Test Results:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          find target/surefire-reports -name "TEST-*.xml" -exec grep -h "testsuite" {} \; | head -5 | while read line; do
-            tests=$(echo $line | grep -oP 'tests="\K[^"]+')
-            failures=$(echo $line | grep -oP 'failures="\K[^"]+')
-            errors=$(echo $line | grep -oP 'errors="\K[^"]+')
-            name=$(echo $line | grep -oP 'name="\K[^"]+')
-            echo "- **$name**: $tests tests, $failures failures, $errors errors" >> $GITHUB_STEP_SUMMARY
-          done
+          total_tests=0
+          total_failures=0
+          total_errors=0
+          while IFS= read -r file; do
+            if [ -f "$file" ]; then
+              tests=$(grep -o 'tests="[0-9]*"' "$file" | grep -o '[0-9]*' | head -1)
+              failures=$(grep -o 'failures="[0-9]*"' "$file" | grep -o '[0-9]*' | head -1)
+              errors=$(grep -o 'errors="[0-9]*"' "$file" | grep -o '[0-9]*' | head -1)
+              name=$(grep -o 'name="[^"]*"' "$file" | head -1 | cut -d'"' -f2)
+              if [ -n "$tests" ]; then
+                total_tests=$((total_tests + tests))
+                total_failures=$((total_failures + ${failures:-0}))
+                total_errors=$((total_errors + ${errors:-0}))
+                echo "- **$name**: $tests tests, $failures failures, $errors errors" >> $GITHUB_STEP_SUMMARY
+              fi
+            fi
+          done < <(find target/surefire-reports -name "TEST-*.xml")
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ All test artifacts uploaded successfully" >> $GITHUB_STEP_SUMMARY
+          echo "**Total**: $total_tests tests, $total_failures failures, $total_errors errors" >> $GITHUB_STEP_SUMMARY
         else
           echo "⚠️ No test results found" >> $GITHUB_STEP_SUMMARY
         fi
