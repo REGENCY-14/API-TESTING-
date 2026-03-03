@@ -1,0 +1,16 @@
+com\api\automation\pages\CommentsPage.class
+com\api\automation\pages\PhotosPage.class
+com\api\automation\tests\TodosTest.class
+com\api\automation\pages\PostsPage.class
+com\api\automation\pages\AlbumsPage.class
+com\api\automation\utils\SchemaUtil.class
+com\api\automation\pages\BasePage.class
+com\api\automation\tests\AlbumsTest.class
+com\api\automation\base\BaseTest.class
+com\api\automation\tests\CommentsTest.class
+com\api\automation\tests\PhotosTest.class
+com\api\automation\tests\UsersTest.class
+com\api\automation\tests\PostsTest.class
+com\api\automation\pages\TodosPage.class
+com\api\automation\pages\UsersPage.class
+utils\Endpoints.class

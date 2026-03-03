@@ -1,37 +1,25 @@
 package com.api.automation.base;
 
-import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.specification.RequestSpecification;
+import java.util.logging.Logger;
+
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.specification.RequestSpecification;
 
 /**
  * Base class for REST Assured API automation tests
  * Provides common setup for request/response specifications and logging
  */
-public class BaseTest implements BeforeTestExecutionCallback, TestWatcher {
+public class BaseTest implements TestWatcher {
 
     private static final Logger LOGGER = Logger.getLogger(BaseTest.class.getName());
-    private static final Map<String, Long> TEST_START_TIMES = new ConcurrentHashMap<>();
 
     protected RequestSpecification requestSpec;
     private static final String BASE_URI = "https://jsonplaceholder.typicode.com";
-
-    /**
-     * Records the start time of a test execution.
-     * Stores the start time in a map using the test's unique ID.
-     */
-    @Override
-    public void beforeTestExecution(ExtensionContext context) {
-        TEST_START_TIMES.put(context.getUniqueId(), System.currentTimeMillis());
-    }
 
     /**
      * Initializes the RequestSpecification before each test.
@@ -85,23 +73,14 @@ public class BaseTest implements BeforeTestExecutionCallback, TestWatcher {
     private void logResult(String status, ExtensionContext context, Throwable cause) {
         String operation = resolveOperation(context);
         String description = normalizeDescription(context.getDisplayName());
-        long elapsedMs = elapsedMs(context);
 
-        String message = String.format("[%s]: %s - %s (%dms)", status, operation, description, elapsedMs);
+        String message = String.format("[%s]: %s - %s", status, operation, description);
         if (cause == null) {
             LOGGER.info(message);
             return;
         }
 
         LOGGER.severe(message + " | Reason: " + cause.getMessage());
-    }
-
-    private long elapsedMs(ExtensionContext context) {
-        Long startedAt = TEST_START_TIMES.remove(context.getUniqueId());
-        if (startedAt == null) {
-            return 0L;
-        }
-        return System.currentTimeMillis() - startedAt;
     }
 
     private String normalizeDescription(String description) {
