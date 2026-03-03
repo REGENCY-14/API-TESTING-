@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.api.automation.tests.PhotosTest
--------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.172 s -- in com.api.automation.tests.PhotosTest

@@ -1,5 +1,7 @@
 package com.api.automation.base;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.extension.TestWatcher;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 /**
@@ -17,6 +20,10 @@ import io.restassured.specification.RequestSpecification;
 public class BaseTest implements TestWatcher {
 
     private static final Logger LOGGER = Logger.getLogger(BaseTest.class.getName());
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final String SEPARATOR = "═══════════════════════════════════════════════════════════════";
+    private static final String PASS_SYMBOL = "✓";
+    private static final String FAIL_SYMBOL = "✗";
 
     protected RequestSpecification requestSpec;
     private static final String BASE_URI = "https://jsonplaceholder.typicode.com";
@@ -33,6 +40,83 @@ public class BaseTest implements TestWatcher {
                 .build();
         
         RestAssured.requestSpecification = requestSpec;
+    }
+
+    // HTTP Request Methods
+    
+    /**
+     * Makes a GET request to the specified endpoint
+     * @param endpoint The endpoint path
+     * @return Response object containing the API response
+     */
+    protected Response get(String endpoint) {
+        return RestAssured.given(requestSpec)
+                .when()
+                .get(endpoint);
+    }
+    
+    /**
+     * Makes a GET request with query parameters
+     * @param endpoint The endpoint path
+     * @param queryParam The query parameter name
+     * @param value The query parameter value
+     * @return Response object containing the API response
+     */
+    protected Response get(String endpoint, String queryParam, Object value) {
+        return RestAssured.given(requestSpec)
+                .queryParam(queryParam, value)
+                .when()
+                .get(endpoint);
+    }
+    
+    /**
+     * Makes a POST request with a body
+     * @param endpoint The endpoint path
+     * @param body The request body
+     * @return Response object containing the API response
+     */
+    protected Response post(String endpoint, String body) {
+        return RestAssured.given(requestSpec)
+                .body(body)
+                .when()
+                .post(endpoint);
+    }
+    
+    /**
+     * Makes a PUT request with a body
+     * @param endpoint The endpoint path
+     * @param body The request body
+     * @return Response object containing the API response
+     */
+    protected Response put(String endpoint, String body) {
+        return RestAssured.given(requestSpec)
+                .body(body)
+                .when()
+                .put(endpoint);
+    }
+    
+    /**
+     * Makes a PATCH request with a body
+     * @param endpoint The endpoint path
+     * @param body The request body
+     * @return Response object containing the API response
+     */
+    protected Response patch(String endpoint, String body) {
+        return RestAssured.given(requestSpec)
+                .body(body)
+                .when()
+                .patch(endpoint);
+    }
+    
+    /**
+     * Makes a DELETE request
+     * @param endpoint The endpoint path
+     * @return Response object containing the API response
+     */
+    protected Response delete(String endpoint) {
+        return RestAssured.given(requestSpec)
+                .when()
+                .delete(endpoint);
     }
 
     /**
@@ -71,16 +155,35 @@ public class BaseTest implements TestWatcher {
      * @param cause The cause of the result, if any.
      */
     private void logResult(String status, ExtensionContext context, Throwable cause) {
+        String timestamp = LocalDateTime.now().format(DATE_FORMATTER);
         String operation = resolveOperation(context);
         String description = normalizeDescription(context.getDisplayName());
-
-        String message = String.format("[%s]: %s - %s", status, operation, description);
+        String symbol = status.equals("PASSED") ? PASS_SYMBOL : (status.equals("FAILED") ? FAIL_SYMBOL : "⊘");
+        
+        // Format the result message
+        String resultLine = String.format("%s  [%s] %s", symbol, status, description);
+        String operationLine = String.format("   Operation: %s", operation);
+        String timeLine = String.format("   Timestamp: %s", timestamp);
+        
         if (cause == null) {
-            LOGGER.info(message);
-            return;
+            // Success case
+            LOGGER.info("\n" + SEPARATOR);
+            LOGGER.info(resultLine);
+            LOGGER.info(operationLine);
+            LOGGER.info(timeLine);
+            LOGGER.info(SEPARATOR);
+        } else {
+            // Failure case
+            String errorMessage = cause.getMessage() != null ? cause.getMessage() : cause.getClass().getSimpleName();
+            String errorLine = String.format("   Error: %s", errorMessage);
+            
+            LOGGER.severe("\n" + SEPARATOR);
+            LOGGER.severe(resultLine);
+            LOGGER.severe(operationLine);
+            LOGGER.severe(timeLine);
+            LOGGER.severe(errorLine);
+            LOGGER.severe(SEPARATOR);
         }
-
-        LOGGER.severe(message + " | Reason: " + cause.getMessage());
     }
 
     private String normalizeDescription(String description) {
