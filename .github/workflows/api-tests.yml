@@ -117,7 +117,7 @@ jobs:
     - name: Slack notification on success
 
       # Runs only if workflow succeeds and webhook exists
-      if: success() && env.SLACK_WEBHOOK_URL != ''
+      if: always() && success() && env.SLACK_WEBHOOK_URL != ''
 
       continue-on-error: true
 
@@ -149,7 +149,7 @@ jobs:
     # Step 10: Send email notification on success
     - name: Email notification on success
 
-      if: success() && env.SMTP_TO != ''
+      if: always() && success() && env.SMTP_TO != ''
 
       continue-on-error: true
 
