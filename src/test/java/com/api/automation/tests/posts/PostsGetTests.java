@@ -51,6 +51,7 @@ public class PostsGetTests extends BaseTest {
     /**
      * Test GET /posts endpoint
      * Validates that the API returns a list of posts
+     * Includes validation of status code, content type, response headers, and body structure
      */
     @Test
     @DisplayName("Should retrieve all posts")
@@ -59,6 +60,9 @@ public class PostsGetTests extends BaseTest {
                 .then()
                 .statusCode(SUCCESS_STATUS_CODE)
                 .contentType(containsString("application/json"))
+                .header("Content-Type", notNullValue())
+                .header("Connection", notNullValue())
+                .header("X-Powered-By", notNullValue())
                 .body("$", hasSize(greaterThan(0)))
                 .body("[0].userId", notNullValue())
                 .body("[0].id", notNullValue())
@@ -68,7 +72,7 @@ public class PostsGetTests extends BaseTest {
 
     /**
      * Test GET /posts/1 endpoint
-     * Validates status code, content type, and response body structure
+     * Validates status code, content type, response headers, and response body structure
      */
     @Test
     @DisplayName("Should retrieve post with id 1")
@@ -77,6 +81,9 @@ public class PostsGetTests extends BaseTest {
                 .then()
                 .statusCode(SUCCESS_STATUS_CODE)
                 .contentType(containsString("application/json"))
+                .header("Content-Type", notNullValue())
+                .header("Connection", notNullValue())
+                .header("Etag", notNullValue())
                 .body("userId", notNullValue())
                 .body("id", equalTo(VALID_POST_ID))
                 .body("title", notNullValue())

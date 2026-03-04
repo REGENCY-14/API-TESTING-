@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Photo Object Schema",
+  "description": "Validates the structure of a photo resource from JSONPlaceholder API",
+  "type": "object",
+  "required": ["albumId", "id", "title", "url", "thumbnailUrl"],
+  "properties": {
+    "albumId": {
+      "type": "integer",
+      "description": "The album ID associated with the photo",
+      "minimum": 1
+    },
+    "id": {
+      "type": "integer",
+      "description": "The unique photo identifier",
+      "minimum": 1
+    },
+    "title": {
+      "type": "string",
+      "description": "The photo title",
+      "minLength": 1
+    },
+    "url": {
+      "type": "string",
+      "description": "The photo URL",
+      "format": "uri"
+    },
+    "thumbnailUrl": {
+      "type": "string",
+      "description": "The photo thumbnail URL",
+      "format": "uri"
+    }
+  },
+  "additionalProperties": false
+}

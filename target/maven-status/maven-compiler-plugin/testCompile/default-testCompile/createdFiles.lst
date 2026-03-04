@@ -14,6 +14,7 @@ com\api\automation\tests\posts\PostsDeleteTests.class
 com\api\automation\testdata\posts\PostsTestData.class
 com\api\automation\tests\comments\CommentsPutTests.class
 com\api\automation\tests\photos\PhotosDeleteTests.class
+com\api\automation\utils\ConfigReader.class
 com\api\automation\tests\posts\PostsPutTests.class
 com\api\automation\tests\posts\PostsPostTests.class
 com\api\automation\tests\photos\PhotosPostTests.class

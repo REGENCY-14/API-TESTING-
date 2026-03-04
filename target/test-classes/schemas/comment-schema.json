@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Comment Object Schema",
+  "description": "Validates the structure of a comment resource from JSONPlaceholder API",
+  "type": "object",
+  "required": ["postId", "id", "name", "email", "body"],
+  "properties": {
+    "postId": {
+      "type": "integer",
+      "description": "The post ID associated with the comment",
+      "minimum": 1
+    },
+    "id": {
+      "type": "integer",
+      "description": "The unique comment identifier",
+      "minimum": 1
+    },
+    "name": {
+      "type": "string",
+      "description": "The comment name/title",
+      "minLength": 1
+    },
+    "email": {
+      "type": "string",
+      "description": "The commenter's email address",
+      "format": "email"
+    },
+    "body": {
+      "type": "string",
+      "description": "The comment body content",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

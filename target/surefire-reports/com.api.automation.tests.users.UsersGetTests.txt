@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.api.automation.tests.users.UsersGetTests
 -------------------------------------------------------------------------------
-Tests run: 13, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 5.402 s <<< FAILURE! -- in com.api.automation.tests.users.UsersGetTests
-com.api.automation.tests.users.UsersGetTests.testIntentionalFailureWrongEmail -- Time elapsed: 0.437 s <<< FAILURE!
+Tests run: 13, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 7.302 s <<< FAILURE! -- in com.api.automation.tests.users.UsersGetTests
+com.api.automation.tests.users.UsersGetTests.testIntentionalFailureWrongEmail -- Time elapsed: 0.471 s <<< FAILURE!
 java.lang.AssertionError: 
 1 expectation failed.
 JSON path email doesn't match.
@@ -100,7 +100,7 @@ Expected: wrong@email.com
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 
-com.api.automation.tests.users.UsersGetTests.testIntentionalFailureWrongUsername -- Time elapsed: 0.479 s <<< FAILURE!
+com.api.automation.tests.users.UsersGetTests.testIntentionalFailureWrongUsername -- Time elapsed: 0.467 s <<< FAILURE!
 java.lang.AssertionError: 
 1 expectation failed.
 JSON path username doesn't match.

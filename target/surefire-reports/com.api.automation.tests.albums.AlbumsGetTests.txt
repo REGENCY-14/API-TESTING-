@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.api.automation.tests.albums.AlbumsGetTests
 -------------------------------------------------------------------------------
-Tests run: 10, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 5.120 s <<< FAILURE! -- in com.api.automation.tests.albums.AlbumsGetTests
-com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongTitle -- Time elapsed: 1.034 s <<< FAILURE!
+Tests run: 10, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 6.719 s <<< FAILURE! -- in com.api.automation.tests.albums.AlbumsGetTests
+com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongTitle -- Time elapsed: 1.726 s <<< FAILURE!
 java.lang.AssertionError: 
 1 expectation failed.
 JSON path title doesn't match.
@@ -36,7 +36,7 @@ Expected: This title does not exist
 	at org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:212)
 	at io.restassured.internal.ResponseSpecificationImpl.body(ResponseSpecificationImpl.groovy:117)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.body(ValidatableResponseOptionsImpl.java:244)
-	at com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongTitle(AlbumsGetTests.java:180)
+	at com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongTitle(AlbumsGetTests.java:186)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:766)
@@ -107,7 +107,7 @@ Expected: This title does not exist
 	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
 	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
 
-com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongStatusCode -- Time elapsed: 0.392 s <<< FAILURE!
+com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongStatusCode -- Time elapsed: 0.455 s <<< FAILURE!
 java.lang.AssertionError: 
 1 expectation failed.
 Expected status code <500> but was <200>.
@@ -132,7 +132,7 @@ Expected status code <500> but was <200>.
 	at io.restassured.specification.ResponseSpecification$statusCode$0.callCurrent(Unknown Source)
 	at io.restassured.internal.ResponseSpecificationImpl.statusCode(ResponseSpecificationImpl.groovy:143)
 	at io.restassured.internal.ValidatableResponseOptionsImpl.statusCode(ValidatableResponseOptionsImpl.java:89)
-	at com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongStatusCode(AlbumsGetTests.java:168)
+	at com.api.automation.tests.albums.AlbumsGetTests.testIntentionalFailureWrongStatusCode(AlbumsGetTests.java:174)
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
 	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:766)
