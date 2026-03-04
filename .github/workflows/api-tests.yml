@@ -112,3 +112,86 @@ jobs:
         else
           echo "⚠️ No test results found" >> $GITHUB_STEP_SUMMARY
         fi
+
+    # Step 8: Send Slack notification on success
+    - name: Slack notification on success
+
+      # Runs only if workflow succeeds and webhook exists
+      if: success() && env.SLACK_WEBHOOK_URL != ''
+
+      continue-on-error: true
+
+      uses: slackapi/slack-github-action@v1.27.0
+
+      with:
+        # Slack message content
+        payload: |
+          {
+            "text": "✅ CI Success\nRepository: ${{ github.repository }}\nRepository URL: ${{ github.server_url }}/${{ github.repository }}\nAuthor: ${{ github.event.pull_request.user.login || github.actor }}\nSource Branch: ${{ github.head_ref || github.ref_name }}\nTarget Branch: ${{ github.base_ref || github.ref_name }}\nCommit Message: ${{ steps.test_meta.outputs.commit_message }}\nCommit SHA: ${{ steps.test_meta.outputs.commit_sha }}\nCommit Author: ${{ steps.test_meta.outputs.commit_author }}\nTests Passed: ${{ steps.test_meta.outputs.tests_passed }}\nTests Failed: ${{ steps.test_meta.outputs.tests_failed }}\nOverall Test Status: ${{ steps.test_meta.outputs.tests_status }}\nWorkflow Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nTimestamp: ${{ steps.test_meta.outputs.timestamp }}
+          }
+
+    # Step 9: Send Slack notification on failure
+    - name: Slack notification on failure
+
+      # Runs if workflow fails
+      if: always() && failure() && env.SLACK_WEBHOOK_URL != ''
+
+      continue-on-error: true
+
+      uses: slackapi/slack-github-action@v1.27.0
+
+      with:
+        payload: |
+          {
+            "text": "❌ CI Failed\nRepository: ${{ github.repository }}\nRepository URL: ${{ github.server_url }}/${{ github.repository }}\nAuthor: ${{ github.event.pull_request.user.login || github.actor }}\nSource Branch: ${{ github.head_ref || github.ref_name }}\nTarget Branch: ${{ github.base_ref || github.ref_name }}\nCommit Message: ${{ steps.test_meta.outputs.commit_message }}\nCommit SHA: ${{ steps.test_meta.outputs.commit_sha }}\nCommit Author: ${{ steps.test_meta.outputs.commit_author }}\nTests Passed: ${{ steps.test_meta.outputs.tests_passed }}\nTests Failed: ${{ steps.test_meta.outputs.tests_failed }}\nOverall Test Status: ${{ steps.test_meta.outputs.tests_status }}\nWorkflow Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nTimestamp: ${{ steps.test_meta.outputs.timestamp }}
+          }
+
+    # Step 10: Send email notification on success
+    - name: Email notification on success
+
+      if: success() && env.SMTP_TO != ''
+
+      continue-on-error: true
+
+      uses: dawidd6/action-send-mail@v3
+
+      with:
+        server_address: ${{ secrets.SMTP_SERVER }}
+        server_port: ${{ secrets.SMTP_PORT }}
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+
+        subject: "CI Success"
+
+        to: ${{ secrets.SMTP_TO }}
+
+        from: selenium-lab-ci@github.com
+
+        body: |
+          CI Success
+          Tests Passed: ${{ steps.test_meta.outputs.tests_passed }}
+
+    # Step 11: Send email notification on failure
+    - name: Email notification on failure
+
+      if: always() && failure() && env.SMTP_TO != ''
+
+      continue-on-error: true
+
+      uses: dawidd6/action-send-mail@v3
+
+      with:
+        server_address: ${{ secrets.SMTP_SERVER }}
+        server_port: ${{ secrets.SMTP_PORT }}
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+
+        subject: "CI Failed"
+
+        to: ${{ secrets.SMTP_TO }}
+
+        from: selenium-lab-ci@github.com
+
+        body: |
+          CI Failed
+          Tests Failed: ${{ steps.test_meta.outputs.tests_failed }}
