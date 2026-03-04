@@ -195,3 +195,14 @@ jobs:
         body: |
           CI Failed
           Tests Failed: ${{ steps.test_meta.outputs.tests_failed }}
+
+    - name: Debug test_meta outputs
+      if: always()
+      run: |
+        echo "Tests Passed: ${{ steps.test_meta.outputs.tests_passed }}"
+        echo "Tests Failed: ${{ steps.test_meta.outputs.tests_failed }}"
+        echo "Tests Status: ${{ steps.test_meta.outputs.tests_status }}"
+        echo "Timestamp: ${{ steps.test_meta.outputs.timestamp }}"
+        echo "Commit SHA: ${{ steps.test_meta.outputs.commit_sha }}"
+        echo "Commit Author: ${{ steps.test_meta.outputs.commit_author }}"
+        echo "Commit Message: ${{ steps.test_meta.outputs.commit_message }}"
