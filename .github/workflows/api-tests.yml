@@ -113,96 +113,92 @@ jobs:
           echo "⚠️ No test results found" >> $GITHUB_STEP_SUMMARY
         fi
 
-    # Step 8: Send Slack notification on success
-    - name: Slack notification on success
-
-      # Runs only if workflow succeeds and webhook exists
-      if: always() && success() && env.SLACK_WEBHOOK_URL != ''
-
-      continue-on-error: true
-
-      uses: slackapi/slack-github-action@v1.27.0
-
-      with:
-        # Slack message content
-        payload: |
-          {
-            "text": "✅ CI Success\nRepository: ${{ github.repository }}\nRepository URL: ${{ github.server_url }}/${{ github.repository }}\nAuthor: ${{ github.event.pull_request.user.login || github.actor }}\nSource Branch: ${{ github.head_ref || github.ref_name }}\nTarget Branch: ${{ github.base_ref || github.ref_name }}\nCommit Message: ${{ steps.test_meta.outputs.commit_message }}\nCommit SHA: ${{ steps.test_meta.outputs.commit_sha }}\nCommit Author: ${{ steps.test_meta.outputs.commit_author }}\nTests Passed: ${{ steps.test_meta.outputs.tests_passed }}\nTests Failed: ${{ steps.test_meta.outputs.tests_failed }}\nOverall Test Status: ${{ steps.test_meta.outputs.tests_status }}\nWorkflow Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nTimestamp: ${{ steps.test_meta.outputs.timestamp }}
-          }
-
-    # Step 9: Send Slack notification on failure
-    - name: Slack notification on failure
-
-      # Runs if workflow fails
-      if: always() && failure() && env.SLACK_WEBHOOK_URL != ''
-
-      continue-on-error: true
-
-      uses: slackapi/slack-github-action@v1.27.0
-
-      with:
-        payload: |
-          {
-            "text": "❌ CI Failed\nRepository: ${{ github.repository }}\nRepository URL: ${{ github.server_url }}/${{ github.repository }}\nAuthor: ${{ github.event.pull_request.user.login || github.actor }}\nSource Branch: ${{ github.head_ref || github.ref_name }}\nTarget Branch: ${{ github.base_ref || github.ref_name }}\nCommit Message: ${{ steps.test_meta.outputs.commit_message }}\nCommit SHA: ${{ steps.test_meta.outputs.commit_sha }}\nCommit Author: ${{ steps.test_meta.outputs.commit_author }}\nTests Passed: ${{ steps.test_meta.outputs.tests_passed }}\nTests Failed: ${{ steps.test_meta.outputs.tests_failed }}\nOverall Test Status: ${{ steps.test_meta.outputs.tests_status }}\nWorkflow Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\nTimestamp: ${{ steps.test_meta.outputs.timestamp }}
-          }
-
-    # Step 10: Send email notification on success
-    - name: Email notification on success
-
-      if: always() && success() && env.SMTP_TO != ''
-
-      continue-on-error: true
-
-      uses: dawidd6/action-send-mail@v3
-
-      with:
-        server_address: ${{ secrets.SMTP_SERVER }}
-        server_port: ${{ secrets.SMTP_PORT }}
-        username: ${{ secrets.SMTP_USERNAME }}
-        password: ${{ secrets.SMTP_PASSWORD }}
-
-        subject: "CI Success"
-
-        to: ${{ secrets.SMTP_TO }}
-
-        from: selenium-lab-ci@github.com
-
-        body: |
-          CI Success
-          Tests Passed: ${{ steps.test_meta.outputs.tests_passed }}
-
-    # Step 11: Send email notification on failure
-    - name: Email notification on failure
-
-      if: always() && failure() && env.SMTP_TO != ''
-
-      continue-on-error: true
-
-      uses: dawidd6/action-send-mail@v3
-
-      with:
-        server_address: ${{ secrets.SMTP_SERVER }}
-        server_port: ${{ secrets.SMTP_PORT }}
-        username: ${{ secrets.SMTP_USERNAME }}
-        password: ${{ secrets.SMTP_PASSWORD }}
-
-        subject: "CI Failed"
-
-        to: ${{ secrets.SMTP_TO }}
-
-        from: selenium-lab-ci@github.com
-
-        body: |
-          CI Failed
-          Tests Failed: ${{ steps.test_meta.outputs.tests_failed }}
-
-    - name: Debug test_meta outputs
+    # Step 12: Extract test results
+    - name: Extract test results
       if: always()
+      id: test_results
       run: |
-        echo "Tests Passed: ${{ steps.test_meta.outputs.tests_passed }}"
-        echo "Tests Failed: ${{ steps.test_meta.outputs.tests_failed }}"
-        echo "Tests Status: ${{ steps.test_meta.outputs.tests_status }}"
-        echo "Timestamp: ${{ steps.test_meta.outputs.timestamp }}"
-        echo "Commit SHA: ${{ steps.test_meta.outputs.commit_sha }}"
-        echo "Commit Author: ${{ steps.test_meta.outputs.commit_author }}"
-        echo "Commit Message: ${{ steps.test_meta.outputs.commit_message }}"
+        COMMIT_SHA=${GITHUB_SHA:0:7}
+
+        TOTAL=0
+        FAILED=0
+        SKIPPED=0
+
+        if ls target/surefire-reports/*.txt >/dev/null 2>&1; then
+          while read -r line; do
+            RUN=$(echo "$line" | sed -n 's/.*Tests run: \([0-9]*\).*/\1/p')
+            FAIL=$(echo "$line" | sed -n 's/.*Failures: \([0-9]*\).*/\1/p')
+            ERR=$(echo "$line" | sed -n 's/.*Errors: \([0-9]*\).*/\1/p')
+            SKIP=$(echo "$line" | sed -n 's/.*Skipped: \([0-9]*\).*/\1/p')
+
+            if [ -n "$RUN" ]; then
+              TOTAL=$((TOTAL + RUN))
+              FAILED=$((FAILED + FAIL + ERR))
+              SKIPPED=$((SKIPPED + SKIP))
+            fi
+          done < <(grep -h "Tests run:" target/surefire-reports/*.txt || true)
+        fi
+
+        PASSED=$((TOTAL - FAILED - SKIPPED))
+
+        FAILING_TESTS_RAW=$(grep -oh '\[FAILED\][^<]*' target/surefire-reports/TEST-*.xml 2>/dev/null \
+          | sed 's/\[FAILED\]: *//' \
+          | sort -u || true)
+
+        FAILING_TESTS_JSON=$(echo "$FAILING_TESTS_RAW" | sed ':a;N;$!ba;s/\n/\\n/g')
+
+        echo "commit_sha=$COMMIT_SHA" >> $GITHUB_OUTPUT
+        echo "total=$TOTAL" >> $GITHUB_OUTPUT
+        echo "passed=$PASSED" >> $GITHUB_OUTPUT
+        echo "failed=$FAILED" >> $GITHUB_OUTPUT
+        echo "skipped=$SKIPPED" >> $GITHUB_OUTPUT
+        echo "failing_tests_raw<<EOF" >> $GITHUB_OUTPUT
+        echo "$FAILING_TESTS_RAW" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        echo "failing_tests_json<<EOF" >> $GITHUB_OUTPUT
+        echo "$FAILING_TESTS_JSON" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    # Step 13: Slack notification
+    - name: Slack notify
+      if: always()
+      uses: slackapi/slack-github-action@v1.27.0
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      with:
+        payload: |
+          {
+            "text": "${{ job.status == 'success' && ':white_check_mark: *CI Pipeline Passed*' || ':rotating_light: *CI Pipeline Failed*' }}\n\n:package: *Repository:* ${{ github.repository }}\n:herb: *Branch:* ${{ github.ref_name }}\n:receipt: *Commit:* ${{ steps.test_results.outputs.commit_sha }}\n:bar_chart: *Status:* ${{ job.status == 'success' && ':white_check_mark: PASSED' || ':x: FAILED' }}\n\n━━━━━━━━━━━━━━━━━━\n:chart_with_upwards_trend: *Test Summary*\n• Total Tests: ${{ steps.test_results.outputs.total }}\n• Failed: ${{ steps.test_results.outputs.failed }} ${{ job.status == 'success' && '' || ':x:' }}\n• Skipped: ${{ steps.test_results.outputs.skipped }}\n━━━━━━━━━━━━━━━━━━\n\n${{ job.status == 'success' && ':white_check_mark: *All Tests Passed*' || format(':red_circle: *Failing Tests*\n{0}', steps.test_results.outputs.failing_tests_json) }}\n\n:link: *Run Details:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          }
+
+    # Step 14: Email notification
+    - name: Email notify
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: ${{ secrets.SMTP_SERVER }}
+        server_port: ${{ secrets.SMTP_PORT }}
+        username: ${{ secrets.SMTP_USERNAME }}
+        password: ${{ secrets.SMTP_PASSWORD }}
+        subject: "CI ${{ job.status == 'success' && ':white_check_mark: PASSED' || ':x: FAILED' }}: ${{ github.repository }}"
+        to: ${{ secrets.NOTIFY_EMAIL_TO }}
+        from: ${{ secrets.NOTIFY_EMAIL_FROM }}
+        body: |
+          ${{ job.status == 'success' && ':white_check_mark: *CI Pipeline Passed*' || ':rotating_light: *CI Pipeline Failed*' }}
+
+          :package: *Repository:* ${{ github.repository }}
+          :herb: *Branch:* ${{ github.ref_name }}
+          :receipt: *Commit:* ${{ steps.test_results.outputs.commit_sha }}
+          :bar_chart: *Status:* ${{ job.status == 'success' && ':white_check_mark: PASSED' || ':x: FAILED' }}
+
+          ━━━━━━━━━━━━━━━━━━
+          :chart_with_upwards_trend: *Test Summary*
+          • Total Tests: ${{ steps.test_results.outputs.total }}
+          • Failed: ${{ steps.test_results.outputs.failed }} ${{ job.status == 'success' && '' || ':x:' }}
+          • Skipped: ${{ steps.test_results.outputs.skipped }}
+          ━━━━━━━━━━━━━━━━━━
+
+          ${{ job.status == 'success' && ':white_check_mark: *All Tests Passed*' || ':red_circle: *Failing Tests*' }}
+          ${{ job.status == 'success' && '' || steps.test_results.outputs.failing_tests_raw }}
+
+          :link: *Run Details:* ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
