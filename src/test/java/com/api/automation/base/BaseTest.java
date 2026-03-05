@@ -50,7 +50,7 @@ public class BaseTest implements TestWatcher {
      * @param endpoint The endpoint path
      * @return Response object containing the API response
      */
-    protected Response get(String endpoint) {
+    public Response get(String endpoint) {
         return RestAssured.given(requestSpec)
                 .when()
                 .get(endpoint);
@@ -63,7 +63,7 @@ public class BaseTest implements TestWatcher {
      * @param value The query parameter value
      * @return Response object containing the API response
      */
-    protected Response get(String endpoint, String queryParam, Object value) {
+    public Response get(String endpoint, String queryParam, Object value) {
         return RestAssured.given(requestSpec)
                 .queryParam(queryParam, value)
                 .when()
@@ -76,7 +76,7 @@ public class BaseTest implements TestWatcher {
      * @param body The request body
      * @return Response object containing the API response
      */
-    protected Response post(String endpoint, String body) {
+    public Response post(String endpoint, String body) {
         return RestAssured.given(requestSpec)
                 .body(body)
                 .when()
@@ -89,7 +89,7 @@ public class BaseTest implements TestWatcher {
      * @param body The request body
      * @return Response object containing the API response
      */
-    protected Response put(String endpoint, String body) {
+    public Response put(String endpoint, String body) {
         return RestAssured.given(requestSpec)
                 .body(body)
                 .when()
@@ -102,7 +102,7 @@ public class BaseTest implements TestWatcher {
      * @param body The request body
      * @return Response object containing the API response
      */
-    protected Response patch(String endpoint, String body) {
+    public Response patch(String endpoint, String body) {
         return RestAssured.given(requestSpec)
                 .body(body)
                 .when()
@@ -114,7 +114,7 @@ public class BaseTest implements TestWatcher {
      * @param endpoint The endpoint path
      * @return Response object containing the API response
      */
-    protected Response delete(String endpoint) {
+    public Response delete(String endpoint) {
         return RestAssured.given(requestSpec)
                 .when()
                 .delete(endpoint);

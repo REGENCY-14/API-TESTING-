@@ -1,0 +1,1 @@
+{"uuid":"5cd0b118-b29d-413b-89df-ca5e00f4fc7e","name":"Should validate GET /albums/1 against album schema and headers","children":["c89a6ea7-799c-4aa0-84fb-ae576fd848f9"],"befores":[],"afters":[],"start":1772720989787,"stop":1772720990176}
